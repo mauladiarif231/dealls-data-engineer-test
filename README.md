@@ -61,7 +61,3 @@ The `Python Data Export.ipynb` notebook exports a dataset to Google Sheets and p
 - **Output**: [Google Sheets link]([YOUR_SPREADSHEET_LINK_HERE](https://docs.google.com/spreadsheets/d/1LJLRE8PFSS0Wc2Ga0b8uOw8RAhipdLWPUFNYDtjiHHU/edit?gid=0#gid=0)) from the `Python Data Export.ipynb` notebook.
 
 ---
-
-Make sure to replace `YOUR_SPREADSHEET_LINK_HERE` with the actual link to the Google Sheets output.
-
-Let me know if you need further adjustments!
