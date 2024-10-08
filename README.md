@@ -3,8 +3,8 @@
 This repository contains solutions for the Senior Data Engineer technical test at Dealls. The test consists of three case studies:
 
 1. **SQL Queries** (file: `Case-Study-SQL-Query.py`)
-2. **Data Export to Google Sheets** (file: `Python Data Export.ipynb`)
-3. **Data Replication using Python** (file: `Python-Data-Replication.ipynb`)
+2. **Data Replication using Python** (file: `Python-Data-Replication.ipynb`)
+3. **Data Export to Google Sheets** (file: `Python Data Export.ipynb`)
 
 Additionally, the output from the Google Sheets export is provided as a link.
 
