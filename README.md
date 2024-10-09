@@ -6,7 +6,7 @@ This repository contains solutions for the Senior Data Engineer technical test a
 2. **Data Replication using Python** (file: `Python-Data-Replication.ipynb`)
 3. **Data Export to Google Sheets** (file: `Python Data Export.ipynb`)
 
-Additionally, the output from the Google Sheets export is provided as a link.
+Additionally, the output from the Google Sheets export and file parquet is provided as a link.
 
 ---
 
@@ -59,5 +59,6 @@ The `Python Data Export.ipynb` notebook exports a dataset to Google Sheets and p
 - `Python-Data-Replication.ipynb`: Notebook for data replication using Python.
 - `Python Data Export.ipynb`: Notebook for exporting and aggregating data to Google Sheets.
 - **Output**: [Google Sheets link](https://docs.google.com/spreadsheets/d/1LJLRE8PFSS0Wc2Ga0b8uOw8RAhipdLWPUFNYDtjiHHU/edit?gid=0#gid=0) from the `Python Data Export.ipynb` notebook.
+  [File parquet link](https://drive.google.com/file/d/1gaaf5OpoqKWkG5k-M4jTuKWJaZoZMON3/view?usp=drive_link) from the `Python-Data-Replication.ipynb` notebook
 
 ---
