@@ -14,7 +14,6 @@ Additionally, the output from the Google Sheets export and file parquet is provi
 
 ### Description:
 The `Case-Study-SQL-Query.py` script contains SQL queries that perform data analysis tasks based on the provided dataset.
-![image](https://github.com/user-attachments/assets/ec75d869-dbb1-4e02-b94a-6824269a827b)
 
 ### How to Run:
 1. Ensure you have Python installed on your machine.
