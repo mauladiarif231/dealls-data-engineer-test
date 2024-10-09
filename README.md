@@ -43,7 +43,7 @@ The `Python-Data-Replication.ipynb` notebook replicates data from a source, tran
 ## 3. Data Export to Google Sheets
 
 ### Description:
-The `Python Data Export.ipynb` notebook exports a dataset to Google Sheets and performs aggregation tasks. The output is available as a [Google Sheets link]([YOUR_SPREADSHEET_LINK_HERE](https://docs.google.com/spreadsheets/d/1LJLRE8PFSS0Wc2Ga0b8uOw8RAhipdLWPUFNYDtjiHHU/edit?gid=0#gid=0)).
+The `Python Data Export.ipynb` notebook exports a dataset to Google Sheets and performs aggregation tasks. The output is available as a [Google Sheets link]([https://docs.google.com/spreadsheets/d/1LJLRE8PFSS0Wc2Ga0b8uOw8RAhipdLWPUFNYDtjiHHU/edit?gid=0#gid=0]).
 
 ### How to Run:
 1. Open [Google Colab](https://colab.research.google.com/).
