@@ -56,8 +56,8 @@ The `Python Data Export.ipynb` notebook exports a dataset to Google Sheets and p
 ## Repository Structure:
 
 - `Case-Study-SQL-Query.py`: SQL queries for data analysis.
-- `Python Data Export.ipynb`: Notebook for exporting and aggregating data to Google Sheets.
 - `Python-Data-Replication.ipynb`: Notebook for data replication using Python.
+- `Python Data Export.ipynb`: Notebook for exporting and aggregating data to Google Sheets.
 - **Output**: [Google Sheets link](https://docs.google.com/spreadsheets/d/1LJLRE8PFSS0Wc2Ga0b8uOw8RAhipdLWPUFNYDtjiHHU/edit?gid=0#gid=0) from the `Python Data Export.ipynb` notebook.
 
 ---
