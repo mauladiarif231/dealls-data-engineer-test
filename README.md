@@ -31,7 +31,7 @@ The `Case-Study-SQL-Query.py` script contains SQL queries that perform data anal
 ## 2. Data Replication with Python
 
 ### Description:
-The `Python-Data-Replication.ipynb` notebook replicates data from a source, transforms it, and writes it to another format.
+The `Python-Data-Replication.ipynb` notebook replicates data from a source, transforms it, and writes it to another format. The output is available as a [File Parquet link](https://drive.google.com/file/d/1gaaf5OpoqKWkG5k-M4jTuKWJaZoZMON3/view?usp=drive_link).
 
 ### How to Run:
 1. Open [Google Colab](https://colab.research.google.com/).
