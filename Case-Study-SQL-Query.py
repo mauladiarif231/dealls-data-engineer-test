@@ -13,23 +13,23 @@ def etl():
         PRIMARY KEY (business_id)
     )
     """)
-    
+
     # Scenario 1: Initial Load
     duckdb.sql("""
     INSERT INTO business_reviews
     SELECT 
         business_id,
         AVG(stars) as stars,
-        AVG(useful)::INTEGER as useful,
-        AVG(funny)::INTEGER as funny,
-        AVG(cool)::INTEGER as cool,
+        SUM(useful) as useful,
+        SUM(funny) as funny,
+        SUM(cool) as cool,
         MAX(date) as latest_date
     FROM read_json_auto('source/yelp_academic_dataset_review.json')
-    WHERE date >= TIMESTAMP '2018-01-01' 
-    AND date <= TIMESTAMP '2018-01-31'
+    WHERE date >= TIMESTAMP '2018-01-01 00:00:00' 
+    AND date <= TIMESTAMP '2018-01-31 23:59:59'
     GROUP BY business_id
     """)
-    
+
     # Check metrics after Scenario 1
     print("Metrics after Initial Load:")
     duckdb.sql("""
@@ -42,7 +42,8 @@ def etl():
         MAX(latest_date) AS latest_date 
     FROM business_reviews
     """).show()
-    
+
+    print("\nDetailed Metrics per Date after Initial Load:")
     duckdb.sql("""
     SELECT 
         latest_date::date AS date, 
@@ -55,48 +56,55 @@ def etl():
     GROUP BY latest_date::date
     ORDER BY date
     """).show()
-    
-    # Scenario 2: First Update (February 1, 2018)
+
+    # Scenario 2: First Update (2 February 2018)
+    # Create temporary table for new data
     duckdb.sql("""
-    -- Create temporary table for new data
-    CREATE TEMPORARY TABLE temp_updates AS
+    CREATE TEMPORARY TABLE temp_new_data AS
     SELECT 
         business_id,
         AVG(stars) as stars,
-        AVG(useful)::INTEGER as useful,
-        AVG(funny)::INTEGER as funny,
-        AVG(cool)::INTEGER as cool,
+        SUM(useful) as useful,
+        SUM(funny) as funny,
+        SUM(cool) as cool,
         MAX(date) as latest_date
     FROM read_json_auto('source/yelp_academic_dataset_review.json')
-    WHERE date > TIMESTAMP '2018-01-31' 
-    AND date <= TIMESTAMP '2018-02-01'
-    GROUP BY business_id;
-
-    -- Update existing records
-    UPDATE business_reviews AS br
-    SET 
-        stars = (br.stars + tu.stars) / 2,
-        useful = ((br.useful + tu.useful) / 2)::INTEGER,
-        funny = ((br.funny + tu.funny) / 2)::INTEGER,
-        cool = ((br.cool + tu.cool) / 2)::INTEGER,
-        latest_date = CASE 
-            WHEN tu.latest_date > br.latest_date THEN tu.latest_date 
-            ELSE br.latest_date 
-        END
-    FROM temp_updates tu
-    WHERE br.business_id = tu.business_id;
-
-    -- Insert new records
-    INSERT INTO business_reviews
-    SELECT tu.*
-    FROM temp_updates tu
-    LEFT JOIN business_reviews br ON tu.business_id = br.business_id
-    WHERE br.business_id IS NULL;
-
-    -- Drop temporary table
-    DROP TABLE temp_updates;
+    WHERE date > TIMESTAMP '2018-01-31 23:59:59'
+    AND date <= TIMESTAMP '2018-02-02 00:00:00'
+    GROUP BY business_id
     """)
-    
+
+    # Update existing records
+    duckdb.sql("""
+    UPDATE business_reviews AS target
+    SET 
+        stars = (target.stars + source.stars) / 2,
+        useful = target.useful + source.useful,
+        funny = target.funny + source.funny,
+        cool = target.cool + source.cool,
+        latest_date = CASE 
+            WHEN source.latest_date > target.latest_date THEN source.latest_date 
+            ELSE target.latest_date 
+        END
+    FROM temp_new_data AS source
+    WHERE target.business_id = source.business_id
+    """)
+
+    # Insert new records
+    duckdb.sql("""
+    INSERT INTO business_reviews
+    SELECT source.*
+    FROM temp_new_data AS source
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM business_reviews AS target 
+        WHERE target.business_id = source.business_id
+    )
+    """)
+
+    # Drop temporary table
+    duckdb.sql("DROP TABLE temp_new_data")
+
     # Check metrics after Scenario 2
     print("\nMetrics after First Update:")
     duckdb.sql("""
@@ -109,7 +117,8 @@ def etl():
         MAX(latest_date) AS latest_date 
     FROM business_reviews
     """).show()
-    
+
+    print("\nDetailed Metrics per Date after First Update:")
     duckdb.sql("""
     SELECT 
         latest_date::date AS date, 
@@ -122,48 +131,55 @@ def etl():
     GROUP BY latest_date::date
     ORDER BY date
     """).show()
-    
-    # Scenario 3: Delayed Update (February 2-13, 2018)
+
+    # Scenario 3: Delayed Update (14 February 2018)
+    # Create temporary table for new data
     duckdb.sql("""
-    -- Create temporary table for new data
-    CREATE TEMPORARY TABLE temp_updates AS
+    CREATE TEMPORARY TABLE temp_new_data AS
     SELECT 
         business_id,
         AVG(stars) as stars,
-        AVG(useful)::INTEGER as useful,
-        AVG(funny)::INTEGER as funny,
-        AVG(cool)::INTEGER as cool,
+        SUM(useful) as useful,
+        SUM(funny) as funny,
+        SUM(cool) as cool,
         MAX(date) as latest_date
     FROM read_json_auto('source/yelp_academic_dataset_review.json')
-    WHERE date > TIMESTAMP '2018-02-01' 
-    AND date <= TIMESTAMP '2018-02-13'
-    GROUP BY business_id;
-
-    -- Update existing records
-    UPDATE business_reviews AS br
-    SET 
-        stars = (br.stars + tu.stars) / 2,
-        useful = ((br.useful + tu.useful) / 2)::INTEGER,
-        funny = ((br.funny + tu.funny) / 2)::INTEGER,
-        cool = ((br.cool + tu.cool) / 2)::INTEGER,
-        latest_date = CASE 
-            WHEN tu.latest_date > br.latest_date THEN tu.latest_date 
-            ELSE br.latest_date 
-        END
-    FROM temp_updates tu
-    WHERE br.business_id = tu.business_id;
-
-    -- Insert new records
-    INSERT INTO business_reviews
-    SELECT tu.*
-    FROM temp_updates tu
-    LEFT JOIN business_reviews br ON tu.business_id = br.business_id
-    WHERE br.business_id IS NULL;
-
-    -- Drop temporary table
-    DROP TABLE temp_updates;
+    WHERE date > TIMESTAMP '2018-02-02 00:00:00'
+    AND date <= TIMESTAMP '2018-02-14 00:00:00'
+    GROUP BY business_id
     """)
-    
+
+    # Update existing records
+    duckdb.sql("""
+    UPDATE business_reviews AS target
+    SET 
+        stars = (target.stars + source.stars) / 2,
+        useful = target.useful + source.useful,
+        funny = target.funny + source.funny,
+        cool = target.cool + source.cool,
+        latest_date = CASE 
+            WHEN source.latest_date > target.latest_date THEN source.latest_date 
+            ELSE target.latest_date 
+        END
+    FROM temp_new_data AS source
+    WHERE target.business_id = source.business_id
+    """)
+
+    # Insert new records
+    duckdb.sql("""
+    INSERT INTO business_reviews
+    SELECT source.*
+    FROM temp_new_data AS source
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM business_reviews AS target 
+        WHERE target.business_id = source.business_id
+    )
+    """)
+
+    # Drop temporary table
+    duckdb.sql("DROP TABLE temp_new_data")
+
     # Check metrics after Scenario 3
     print("\nMetrics after Delayed Update:")
     duckdb.sql("""
@@ -176,7 +192,8 @@ def etl():
         MAX(latest_date) AS latest_date 
     FROM business_reviews
     """).show()
-    
+
+    print("\nDetailed Metrics per Date after Delayed Update:")
     duckdb.sql("""
     SELECT 
         latest_date::date AS date, 
